@@ -6,17 +6,14 @@ import ActionButtons from "./components/ActionButtons";
 import TimeInput from "./components/TimeInput";
 import { useStopwatch } from "./hooks/useStopwatch";
 import { useCountdown } from "./hooks/useCountdown";
-import { formatTime } from "./utils/time";
 
 export default function App() {
   const [mode, setMode] = useState("stopwatch");
   const sw = useStopwatch();
   const timer = useCountdown();
 
-  const timerDisplay = useMemo(
-    () => formatTime(timer.seconds),
-    [timer.seconds],
-  );
+  const stopwatchValue = useMemo(() => sw.elapsed, [sw.elapsed]);
+  const timerValue = useMemo(() => timer.remaining, [timer.remaining]);
 
   return (
     <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.18),transparent_28%),linear-gradient(180deg,#020617_0%,#0f172a_100%)] px-4 py-10 text-white">
@@ -39,11 +36,7 @@ export default function App() {
           <div className="mt-8 space-y-8">
             {mode === "stopwatch" ? (
               <>
-                <TimeDisplay
-                  label="Stopwatch"
-                  value={formatTime(sw.seconds)}
-                  accent
-                />
+                <TimeDisplay label="Stopwatch" value={stopwatchValue} accent />
                 <ActionButtons
                   onStart={sw.start}
                   onPause={sw.pause}
@@ -54,7 +47,7 @@ export default function App() {
               <>
                 <TimeDisplay
                   label={timer.finished ? "Finished" : "Timer"}
-                  value={timerDisplay}
+                  value={timerValue}
                   accent={timer.running || timer.finished}
                 />
 
@@ -66,11 +59,13 @@ export default function App() {
                       if (e.key === "Enter") timer.start();
                     }}
                   />
+
                   {timer.finished && (
                     <div className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-200">
                       Time is up.
                     </div>
                   )}
+
                   <ActionButtons
                     startLabel="Start Timer"
                     onStart={timer.start}

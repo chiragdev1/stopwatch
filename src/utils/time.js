@@ -1,19 +1,32 @@
-export function pad(n) {
-  return String(n).padStart(2, "0");
+export function pad(value) {
+  return String(value).padStart(2, "0");
 }
 
-export function formatTime(totalSeconds) {
-  const safe = Math.max(0, Math.floor(totalSeconds));
-  const hours = Math.floor(safe / 3600);
-  const minutes = Math.floor((safe % 3600) / 60);
-  const seconds = safe % 60;
+export function formatTime(ms) {
+  const safe = Math.max(0, Math.floor(ms));
 
-  if (hours > 0) return `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
-  return `${pad(minutes)}:${pad(seconds)}`;
+  const minutes = Math.floor(safe / 60000);
+  const seconds = Math.floor((safe % 60000) / 1000);
+
+  const hundredths = Math.floor((safe % 1000) / 10);
+
+  return `${pad(minutes)}:${pad(seconds)}:${pad(hundredths)}`;
 }
 
-export function minutesToSeconds(value) {
-  const n = Number(value);
-  if (!Number.isFinite(n) || n <= 0) return 0;
-  return Math.floor(n * 60);
+export function minutesToMilliseconds(value) {
+  const minutes = Number(value);
+
+  if (!Number.isFinite(minutes) || minutes <= 0) {
+    return 0;
+  }
+
+  return Math.floor(minutes * 60 * 1000);
+}
+
+export function millisecondsToSeconds(ms) {
+  return Math.floor(ms / 1000);
+}
+
+export function clamp(value, min, max) {
+  return Math.min(Math.max(value, min), max);
 }

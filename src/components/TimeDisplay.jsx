@@ -1,4 +1,7 @@
-export default function TimeDisplay({ value, label, accent = false }) {
+import React from "react";
+import { formatTime } from "../utils/time";
+
+function TimeDisplay({ label, value, accent = false }) {
   return (
     <div className="text-center">
       <p className="mb-3 text-xs font-medium uppercase tracking-[0.3em] text-slate-400">
@@ -11,8 +14,10 @@ export default function TimeDisplay({ value, label, accent = false }) {
             : "border-white/10 bg-white/5 text-white"
         }`}
       >
-        {value}
+        {formatTime(value)}
       </div>
     </div>
   );
 }
+
+export default React.memo(TimeDisplay);

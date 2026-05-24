@@ -1,18 +1,40 @@
-import { useState } from "react";
+import { useRef, useState, useCallback } from "react";
 import { useInterval } from "./useInterval";
 
 export function useStopwatch() {
-  const [seconds, setSeconds] = useState(0);
+  const [elapsed, setElapsed] = useState(0);
   const [running, setRunning] = useState(false);
 
-  useInterval(() => setSeconds((s) => s + 1), 1000, running);
+  const startTimeRef = useRef(0);
+  const elapsedBeforePauseRef = useRef(0);
 
-  const start = () => setRunning(true);
-  const pause = () => setRunning(false);
-  const reset = () => {
+  useInterval(
+    () => {
+      setElapsed(Date.now() - startTimeRef.current);
+    },
+    50,
+    running,
+  );
+
+  const start = useCallback(() => {
+    if (running) return;
+    startTimeRef.current = Date.now() - elapsedBeforePauseRef.current;
+    setRunning(true);
+  }, [running]);
+
+  const pause = useCallback(() => {
+    if (!running) return;
+    elapsedBeforePauseRef.current = Date.now() - startTimeRef.current;
+    setElapsed(elapsedBeforePauseRef.current);
     setRunning(false);
-    setSeconds(0);
-  };
+  }, [running]);
 
-  return { seconds, running, start, pause, reset };
+  const reset = useCallback(() => {
+    setRunning(false);
+    setElapsed(0);
+    startTimeRef.current = 0;
+    elapsedBeforePauseRef.current = 0;
+  }, []);
+
+  return { elapsed, running, start, pause, reset };
 }
