@@ -1,7 +1,12 @@
-export default function TimeInput({ value, onChange, onKeyDown }) {
+import React from "react";
+
+function TimeInput({ value, onChange, onKeyDown }) {
   return (
     <div className="space-y-2">
-      <label htmlFor="minutes" className="text-sm font-medium text-slate-300">
+      <label
+        htmlFor="minutes"
+        className="text-sm font-medium text-zinc-700 dark:text-zinc-300"
+      >
         Timer duration
       </label>
       <input
@@ -14,8 +19,10 @@ export default function TimeInput({ value, onChange, onKeyDown }) {
         value={value}
         onChange={onChange}
         onKeyDown={onKeyDown}
-        className="w-full rounded-2xl border border-white/10 bg-white/5 px-4 py-3 text-white placeholder:text-slate-500 outline-none transition focus:border-cyan-400/50 focus:ring-2 focus:ring-cyan-400/20"
+        className="w-full rounded-2xl border border-zinc-200 bg-white px-4 py-3 text-zinc-900 placeholder:text-zinc-400 outline-none transition focus:border-blue-500/40 focus:ring-2 focus:ring-blue-500/10 dark:border-white/10 dark:bg-white/5 dark:text-white"
       />
     </div>
   );
 }
+
+export default React.memo(TimeInput);

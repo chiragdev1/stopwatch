@@ -1,37 +1,29 @@
-function Btn({ children, variant = "neutral", ...props }) {
-  const styles = {
-    primary: "bg-cyan-400 text-slate-950 hover:bg-cyan-300",
-    neutral: "bg-white/10 text-white hover:bg-white/15",
-    danger: "bg-rose-500 text-white hover:bg-rose-400",
-  };
+import React from "react";
+import { Play, Pause, RotateCcw } from "lucide-react";
 
+function ActionButtons({ running, onToggle, onReset, toggleLabel = "Start" }) {
   return (
-    <button
-      {...props}
-      className={`rounded-2xl px-5 py-3 text-sm font-semibold transition disabled:cursor-not-allowed disabled:opacity-40 ${styles[variant]}`}
-    >
-      {children}
-    </button>
-  );
-}
+    <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+      <button
+        type="button"
+        onClick={onToggle}
+        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-blue-600 px-5 py-3 text-sm font-semibold text-white shadow-sm shadow-blue-600/20 transition hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500/20"
+        aria-label={running ? "Pause" : "Start"}
+      >
+        {running ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+        {running ? "Pause" : toggleLabel}
+      </button>
 
-export default function ActionButtons({
-  onStart,
-  onPause,
-  onReset,
-  startLabel = "Start",
-}) {
-  return (
-    <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
-      <Btn variant="primary" onClick={onStart}>
-        {startLabel}
-      </Btn>
-      <Btn variant="neutral" onClick={onPause}>
-        Pause
-      </Btn>
-      <Btn variant="danger" onClick={onReset}>
+      <button
+        type="button"
+        onClick={onReset}
+        className="inline-flex items-center justify-center gap-2 rounded-2xl bg-zinc-100 px-5 py-3 text-sm font-semibold text-zinc-900 transition hover:bg-zinc-200 focus:outline-none focus:ring-2 focus:ring-zinc-400/20 dark:bg-white/5 dark:text-white dark:hover:bg-white/10"
+      >
+        <RotateCcw className="h-4 w-4" />
         Reset
-      </Btn>
+      </button>
     </div>
   );
 }
+
+export default React.memo(ActionButtons);

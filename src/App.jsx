@@ -4,11 +4,15 @@ import ModeTabs from "./components/ModeTabs";
 import TimeDisplay from "./components/TimeDisplay";
 import ActionButtons from "./components/ActionButtons";
 import TimeInput from "./components/TimeInput";
+import ThemeToggle from "./components/ThemeToggle";
 import { useStopwatch } from "./hooks/useStopwatch";
 import { useCountdown } from "./hooks/useCountdown";
+import { useTheme } from "./hooks/useTheme";
 
 export default function App() {
   const [mode, setMode] = useState("stopwatch");
+  const { theme, toggleTheme } = useTheme();
+
   const sw = useStopwatch();
   const timer = useCountdown();
 
@@ -16,19 +20,23 @@ export default function App() {
   const timerValue = useMemo(() => timer.remaining, [timer.remaining]);
 
   return (
-    <main className="min-h-screen bg-[radial-gradient(circle_at_top,rgba(34,211,238,0.18),transparent_28%),linear-gradient(180deg,#020617_0%,#0f172a_100%)] px-4 py-10 text-white">
-      <div className="mx-auto flex w-full max-w-3xl flex-col items-center gap-6">
-        <section className="text-center">
-          <p className="mb-2 text-sm font-medium uppercase tracking-[0.35em] text-cyan-300/80">
-            Time Tools
-          </p>
-          <h1 className="text-4xl font-bold tracking-tight sm:text-5xl">
-            Stopwatch & Timer
-          </h1>
-          <p className="mt-3 max-w-xl text-sm leading-6 text-slate-300 sm:text-base">
-            Clean, fast, responsive, and easy to use.
-          </p>
-        </section>
+    <main className="min-h-screen bg-zinc-50 px-4 py-6 text-zinc-900 transition-colors duration-300 dark:bg-zinc-950 dark:text-white">
+      <div className="mx-auto flex w-full max-w-3xl flex-col gap-6">
+        <header className="flex items-center justify-between rounded-4xl border border-zinc-200 bg-white px-5 py-4 shadow-sm dark:border-white/10 dark:bg-white/5">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.35em] text-blue-600 dark:text-blue-400">
+              Time Tools
+            </p>
+            <h1 className="mt-1 text-2xl font-bold tracking-tight sm:text-3xl">
+              Stopwatch & Timer
+            </h1>
+            <p className="mt-1 text-sm text-zinc-500 dark:text-zinc-400">
+              Clean, fast, and easy to use.
+            </p>
+          </div>
+
+          <ThemeToggle theme={theme} onToggle={toggleTheme} />
+        </header>
 
         <Card>
           <ModeTabs mode={mode} setMode={setMode} />
@@ -38,8 +46,8 @@ export default function App() {
               <>
                 <TimeDisplay label="Stopwatch" value={stopwatchValue} accent />
                 <ActionButtons
-                  onStart={sw.start}
-                  onPause={sw.pause}
+                  running={sw.running}
+                  onToggle={sw.running ? sw.pause : sw.start}
                   onReset={sw.reset}
                 />
               </>
@@ -61,16 +69,16 @@ export default function App() {
                   />
 
                   {timer.finished && (
-                    <div className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-200">
+                    <div className="rounded-2xl border border-amber-400/20 bg-amber-400/10 px-4 py-3 text-sm font-medium text-amber-700 dark:text-amber-200">
                       Time is up.
                     </div>
                   )}
 
                   <ActionButtons
-                    startLabel="Start Timer"
-                    onStart={timer.start}
-                    onPause={timer.pause}
+                    running={timer.running}
+                    onToggle={timer.running ? timer.pause : timer.start}
                     onReset={timer.reset}
+                    toggleLabel="Start Timer"
                   />
                 </div>
               </>
